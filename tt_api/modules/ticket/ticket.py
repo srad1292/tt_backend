@@ -21,3 +21,31 @@ def getTicket(id=0):
  
     finally:
         return ticket
+
+
+def getTickets(query_filter=''):
+    tickets = []
+    try:
+        conn = db_connect.connect()
+        if conn.is_connected():
+            cursor = conn.cursor(dictionary=True)
+            
+            query = "SELECT * FROM dev_ticket WHERE assignee=%s AND resolution=%s"
+            data = ('sr198e', 'Unresolved', )
+            
+            cursor.execute(query,data)
+            
+            ticket = cursor.fetchone()
+            while ticket is not None:
+                tickets.append(ticket)
+                ticket = cursor.fetchone()
+
+            cursor.close()
+            conn.close()
+
+
+    except Error as e:
+        tickets = [{'name': str(e)}]
+ 
+    finally:
+        return tickets
